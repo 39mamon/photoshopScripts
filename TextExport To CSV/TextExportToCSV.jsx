@@ -32,7 +32,7 @@
 	OUTPUT_FILE.linefeed = LINEFEED_CODE;
 	//ファイルを開く
 	OUTPUT_FILE.open("w", "TEXT", "????");
-	OUTPUT_FILE.writeln("Text"+","+"Font"+","+"Size"+","+"line-height"+","+"letter-spacing"+","+"HEX"+","+"R"+","+"G"+","+"B");
+	OUTPUT_FILE.writeln("Text"+","+"Font"+","+"Size"+","+"leading"+","+"line-height"+","+"letter-spacing"+","+"HEX"+","+"R"+","+"G"+","+"B");
 	//レイヤーの走査結果を書き込んで保存
 	ScanAndWrite(app.activeDocument, OUTPUT_FILE, '/');
 	OUTPUT_FILE.close();
@@ -63,10 +63,10 @@ function ScanAndWrite(targetDocument, OUTPUT_FILE, path) {
 				B = Math.round(currentLayer.textItem.color.rgb.blue);
 				fontSize = Math.floor(currentLayer.textItem.size*100)/100;
 				leading = Math.floor(currentLayer.textItem.leading*100)/100;
-                lineHeight = Math.floor(fontSize/leading)/100;
+                lineHeight = round(leading/fontSize, 2);
                 letterSpace = currentLayer.textItem.tracking / 1000+"em";
 
-				resultText +=DelLinefeed(currentLayer.textItem.contents)+","+currentLayer.textItem.font+","+fontSize+","+lineHeight+","+letterSpace+","+RgbToHex(R,G,B)+","+R+","+G+","+B;
+				resultText +=DelLinefeed(currentLayer.textItem.contents)+","+currentLayer.textItem.font+","+fontSize+","+leading+","+lineHeight+","+letterSpace+","+RgbToHex(R,G,B)+","+R+","+G+","+B;
 				OUTPUT_FILE.writeln(resultText);
 			}
 		}
@@ -84,6 +84,21 @@ function DelLinefeed(txt){
 /*RBGをHEXに変換*/
 function RgbToHex(r,g,b){
 	return "#" +("0" + Math.round(r,10).toString(16)).slice(-2)+("0" + Math.round(g,10).toString(16)).slice(-2)+("0" + Math.round(b,10).toString(16)).slice(-2);
+}
+
+/*
+	MDNの提案されている四捨五入メソッド
+	https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Math/round#A_better_solution
+*/
+function round(number, precision) {
+	var shift = function (number, precision, reverseShift) {
+	  if (reverseShift) {
+		precision = -precision;
+	  }  
+	  var numArray = ("" + number).split("e");
+	  return +(numArray[0] + "e" + (numArray[1] ? (+numArray[1] + precision) : precision));
+	};
+	return shift(Math.round(shift(number, precision, false)), precision, true);
 }
 
 /*実行*/
