@@ -62,8 +62,14 @@ function ScanAndWrite(targetDocument, OUTPUT_FILE, path) {
 				G = Math.round(currentLayer.textItem.color.rgb.green);
 				B = Math.round(currentLayer.textItem.color.rgb.blue);
 				fontSize = Math.floor(currentLayer.textItem.size*100)/100;
-				leading = Math.floor(currentLayer.textItem.leading*100)/100;
-                lineHeight = round(leading/fontSize, 2);
+				// TODO : 絶対やるべきではないけど、スマートな解決までは...
+				try {
+					leading = Math.floor(currentLayer.textItem.leading*100)/100;
+					lineHeight = round(leading/fontSize, 2);
+				} catch (error) {
+					leading = "leading is auto or undefinde or error?";
+					lineHeight = "leading is auto or undefinde or error?";					
+				}
                 letterSpace = currentLayer.textItem.tracking / 1000+"em";
 
 				resultText +=DelLinefeed(currentLayer.textItem.contents)+","+currentLayer.textItem.font+","+fontSize+","+leading+","+lineHeight+","+letterSpace+","+RgbToHex(R,G,B)+","+R+","+G+","+B;
