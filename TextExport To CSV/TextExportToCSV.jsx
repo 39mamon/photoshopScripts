@@ -61,16 +61,20 @@ function ScanAndWrite(targetDocument, OUTPUT_FILE, path) {
 				R = Math.round(currentLayer.textItem.color.rgb.red);
 				G = Math.round(currentLayer.textItem.color.rgb.green);
 				B = Math.round(currentLayer.textItem.color.rgb.blue);
-				fontSize = Math.floor(currentLayer.textItem.size*100)/100;
 				// TODO : 絶対やるべきではないけど、スマートな解決までは...
+				// TODO : エラーをキャッチしたとき少なくともログに出力したい
 				try {
+					fontSize = Math.floor(currentLayer.textItem.size*100)/100;
 					leading = Math.floor(currentLayer.textItem.leading*100)/100;
 					lineHeight = round(leading/fontSize, 2);
+					letterSpace = currentLayer.textItem.tracking / 1000+"em";
 				} catch (error) {
+					fontSize = "fontSize is error?";
 					leading = "leading is auto or undefinde or error?";
-					lineHeight = "leading is auto or undefinde or error?";					
+					lineHeight = "leading is auto or undefinde or error?";
+					letterSpace = "letterSpace is error?";				
 				}
-                letterSpace = currentLayer.textItem.tracking / 1000+"em";
+                
 
 				resultText +=DelLinefeed(currentLayer.textItem.contents)+","+currentLayer.textItem.font+","+fontSize+","+leading+","+lineHeight+","+letterSpace+","+RgbToHex(R,G,B)+","+R+","+G+","+B;
 				OUTPUT_FILE.writeln(resultText);
